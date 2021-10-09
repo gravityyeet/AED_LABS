@@ -88,16 +88,13 @@ void AlocaTabelaPalavras ( char *ficheiro, st_texto *t)
 {
   FILE *fp;
   char *palavra;
-  int i, len, n_max_caracteres = 0;
+  int i, len = 0;
 
   (*t).n_total_palavras = 0;
   (*t).n_dist_palavras = 0;
   fp = AbreFicheiro ( ficheiro, "r" );
   while ( ( palavra = LePalavra ( fp ) ) != NULL ) {
     (*t).n_total_palavras++;
-    len = strlen ( palavra );
-    if ( len > n_max_caracteres )
-      n_max_caracteres = len;
   }
   fclose ( fp );
   printf ( "Words count: %d\n", (*t).n_total_palavras );
@@ -112,8 +109,12 @@ void AlocaTabelaPalavras ( char *ficheiro, st_texto *t)
     fprintf ( stderr, "ERROR: not enough memory available!\n" );
     exit ( 4 );
   }
-  for ( i = 0; i < (*t).n_total_palavras; i++ )   {
-    (*t).palavras[i] =  (char *) malloc(sizeof(char) * n_max_caracteres);
+
+  fp = AbreFicheiro ( ficheiro, "r" );
+  for (i = 0; i < (*t).n_total_palavras; i++) {
+    palavra = LePalavra ( fp );
+    len = strlen(palavra);
+    (*t).palavras[i] =  (char *) malloc(sizeof(char) * len + 1);
     if ( (*t).palavras[i] == NULL ) {
       fprintf ( stderr, "ERROR: not enough memory available!\n" );
       exit ( 3 );
@@ -121,6 +122,8 @@ void AlocaTabelaPalavras ( char *ficheiro, st_texto *t)
     (*t).palavras[i][0] = '\0';
     (*t).ocorrencias[i] = 0;
   }
+
+  fclose ( fp );
   return;
 }
 
