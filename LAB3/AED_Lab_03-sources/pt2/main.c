@@ -60,11 +60,12 @@ int main(int argc, char *argv[])
   char novaPal[DIM_MAX_PALAVRA];
   FILE *fpIn,*fpOut;
 
-  if(argc < 2)
+  if(argc < 3)
     Usage(argv[0]);
 
   nomeFicheiroIn = argv[1];
-  nomeFicheiroOut = /* -- INSERT CODE to ALLOCATE MEMORY -- */
+  /* tamanho da palavra variavel */
+  nomeFicheiroOut = (char *) malloc(strlen(nomeFicheiroIn) + 10);
     if(nomeFicheiroOut == NULL)
       erroMemoria("Memory allocation for nomeFicheiroOut in main" );
 
@@ -92,10 +93,18 @@ int main(int argc, char *argv[])
   }
   /* write out words to output file */
   aux = lp;
-  while(aux != NULL) {
-    escreveUmaPalavra((t_palavra*) getItemLista(aux), fpOut);
+  if (strcmp(argv[2], "INICIO") == 0) {
+   while(aux != NULL) {
+    escreveUmaPalavra((t_palavra*) getItemLista(aux), fpOut, numTotalPalavras);
     aux = getProxElementoLista(aux);
+    } 
+  } else if (strcmp(argv[2], "FIM") == 0) {
+    escreveUmaPalavraInverso(getItemLista(aux), fpOut, numTotalPalavras, aux);
+  } else {
+    printf("ERROR incorrect argument option\n");
+    exit(4);
   }
+  
 
   numPalavrasDiferentes = numItensNaLista(lp);
   printf("Number of words = %d, Number of different words = %d\n",
@@ -105,8 +114,11 @@ int main(int argc, char *argv[])
   libertaLista(lp, libertaItem);
 
   /* -- CLOSE ALL OPEN FILES -- */
+  fclose(fpIn);
+  fclose(fpOut);
 
   /* -- FREE ANY OTHER MEMORY YOU HAVE ALLOCATED -- */
+  free(nomeFicheiroOut);
 
   exit(0);
 }

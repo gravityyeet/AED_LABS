@@ -32,7 +32,8 @@ t_palavra  *criaPalavra (char *nome);
 char       *getPalavra (t_palavra *p);
 int         getNocorr (t_palavra *p);
 void        incOcorr (t_palavra *p);
-void        escreveUmaPalavra (t_palavra *p,FILE *fp);
+void        escreveUmaPalavra (t_palavra *p,FILE *fp, int num_total_pal);
+void        escreveUmaPalavraInverso(t_palavra *p, FILE *fp, int num_total_pal, t_lista *lp);
 void        libertaPalavra(t_palavra *p);
 
 #endif

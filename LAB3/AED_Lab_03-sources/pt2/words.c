@@ -121,12 +121,14 @@ t_palavra  *criaPalavra(char *pal)
 {
   t_palavra *nova;
 
-  nova = /* INSERT CODE to ALLOCATE MEMORY */
+  /* Alloc de um no */
+  nova = (t_palavra *) malloc(sizeof(t_palavra));
     if(nova == NULL)
       erroMemoria("Reserve memory for new word in criaPalavra" );
 
-  nova -> pal = /* INSERT CODE to ALLOCATE MEMORY */
-    if(nova == NULL)
+  /* Alloc de uma string de dimensão de pal + 1 */
+  nova -> pal = (char *) malloc(strlen(pal) + 1);
+    if(nova == NULL)                                
       erroMemoria("Reserve of name in criaPalavra" );
 
   strcpy(nova -> pal,pal);
@@ -197,9 +199,18 @@ void incOcorr(t_palavra *p)
  *              it was seen on the input (ocorrencias)
  *****************************************************************************/
 
-void escreveUmaPalavra(t_palavra *p, FILE *fp)
+void escreveUmaPalavra(t_palavra *p, FILE *fp, int num_total_pal)
 {
-  fprintf(fp,"%4d : %s\n", p->ocorrencias, p->pal);
+  fprintf(fp,"%4d %.4f : %s\n", p->ocorrencias,(float) p->ocorrencias / num_total_pal, p->pal);
+}
+
+void escreveUmaPalavraInverso(t_palavra *p, FILE *fp, int num_total_pal, t_lista *lp)
+{
+  lp = getProxElementoLista(lp);
+  if (lp != NULL) {
+    escreveUmaPalavraInverso((t_palavra*) getItemLista(lp), fp, num_total_pal, lp);
+  }
+  fprintf(fp,"%4d %.4f : %s\n", p->ocorrencias,(float) p->ocorrencias / num_total_pal, p->pal);
 }
 
 
@@ -215,7 +226,8 @@ void escreveUmaPalavra(t_palavra *p, FILE *fp)
 
 void libertaPalavra(t_palavra *p)
 {
-  /* -- FREE MEMORY RESERVED FOR WORD -- */
+  free (p->pal);      
+  free(p);            
 
   return;
 }
